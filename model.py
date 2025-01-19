@@ -95,11 +95,15 @@ def predict():
             output = model(image)
             _, predicted = torch.max(output, 1)
             confidence = torch.nn.functional.softmax(output, dim=1)[0] * 100
-            # return predicted.item()
-            result = f'Identified Disease: {idenfied_classes[predicted[0].item()]} Confidence: {confidence[predicted[0].item()].item()}%'
+            identified_disease = idenfied_classes[predicted[0].item()]
+            confidence_value = confidence[predicted[0].item()].item()
 
-            
-            return jsonify({"result": result}), 200
+            result = {
+                "identified_disease": identified_disease,
+                "confidence": confidence_value
+            }
+
+            return jsonify(result), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
@@ -108,4 +112,5 @@ def home():
     return jsonify({"message": "Welcome to the Plant Disease Detection API!"}), 200
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    from waitress import serve
+    serve(app, host="127.0.0.1", port=8080)
