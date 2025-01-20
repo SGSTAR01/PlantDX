@@ -107,10 +107,15 @@ def predict():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+@app.route('/predict', methods=['GET'])
+def predict_get():
+    return jsonify({"error": "Please make a POST request to this endpoint with a file upload."}), 400
+    
 @app.route('/')
 def home():
     return jsonify({"message": "Welcome to the Plant Disease Detection API!"}), 200
 
 if __name__ == "__main__":
     from waitress import serve
+    print("Server is starting on http://127.0.0.1:8080")
     serve(app, host="127.0.0.1", port=8080)
